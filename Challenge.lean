@@ -134,3 +134,48 @@ theorem split_main {V : Type*} [Fintype V] [DecidableEq V] (G : SimpleGraph V) [
   sorry
 
 end ErdosPaperI
+
+/-! ## Finite linear programming duality
+
+Over `ℝ`: Farkas' lemma in inequality form and covering/packing strong duality (used in the proof of
+the main theorems). Over `ℚ`: Farkas' lemma (a rational system `M x ≤ b` has a rational solution or a
+nonnegative rational certificate of infeasibility) and strong duality for the rational packing LP
+(from the author's Erdős #81 Paper V formalization). -/
+
+namespace FiniteLPDuality
+
+/-- **Farkas' lemma over `ℝ`** (inequality form). If `x ≥ 0, N x ≥ c` has no solution, there is
+`y ≥ 0` with `Nᵀ y ≤ 0` and `⟨c, y⟩ > 0`. -/
+theorem farkas_real {ι κ : Type*} [Fintype ι] [Fintype κ] (N : ι → κ → ℝ) (c : ι → ℝ)
+    (hinfeas : ¬ ∃ x : κ → ℝ, (∀ j, 0 ≤ x j) ∧ (∀ i, c i ≤ ∑ j, N i j * x j)) :
+    ∃ y : ι → ℝ, (∀ i, 0 ≤ y i) ∧ (∀ j, ∑ i, N i j * y i ≤ 0) ∧ 0 < ∑ i, c i * y i := by
+  sorry
+
+/-- **Covering/packing strong duality over `ℝ`.** For a nonnegative incidence matrix `A` with
+nonnegative capacities `r`, in which every column has a positive entry, some packing attains the
+covering optimum. -/
+theorem covering_packing_duality {ι κ : Type*} [Fintype ι] [Fintype κ]
+    (A : ι → κ → ℝ) (r : ι → ℝ) (hA : ∀ e t, 0 ≤ A e t) (hr : ∀ e, 0 ≤ r e)
+    (hcol : ∀ t, ∃ e, 0 < A e t) :
+    ∃ w : κ → ℝ, (∀ t, 0 ≤ w t) ∧ (∀ e, (∑ t, A e t * w t) ≤ r e) ∧
+      (∑ t, w t) = sInf {v : ℝ | ∃ x : ι → ℝ, (∀ e, 0 ≤ x e) ∧
+        (∀ t, 1 ≤ ∑ e, A e t * x e) ∧ v = ∑ e, r e * x e} := by
+  sorry
+
+/-- **Farkas' lemma over `ℚ`.** A finite rational system `M x ≤ b` has a rational solution, or a
+nonnegative rational certificate `y` with `yᵀ M = 0` and `⟨y, b⟩ < 0`. -/
+theorem farkas_rat {J N : Type*} [Fintype J] [Fintype N] (M : J → N → ℚ) (b : J → ℚ) :
+    (∃ x : N → ℚ, ∀ j, ∑ k, M j k * x k ≤ b j) ∨
+      ∃ y : J → ℚ, (∀ j, 0 ≤ y j) ∧ (∀ k, ∑ j, y j * M j k = 0) ∧ ∑ j, y j * b j < 0 := by
+  sorry
+
+/-- **Strong duality for the rational packing LP.** If the incidence matrix is nonnegative and every
+item uses some resource with coefficient at least `1`, a packing (`w ≥ 0`, `∑ᵢ A i e wᵢ ≤ 1`) and a
+cover (`p ≥ 0`, `gᵢ ≤ ∑ₑ A i e pₑ`) of equal value exist; both are therefore optimal. -/
+theorem packing_duality_rat {I E : Type*} [Fintype I] [Fintype E] [DecidableEq I] [DecidableEq E]
+    (A : I → E → ℚ) (g : I → ℚ) (hA : ∀ i e, 0 ≤ A i e) (hcover : ∀ i, ∃ e, 1 ≤ A i e) :
+    ∃ (w : I → ℚ) (p : E → ℚ), (∀ i, 0 ≤ w i) ∧ (∀ e, ∑ i, A i e * w i ≤ 1) ∧
+      (∀ e, 0 ≤ p e) ∧ (∀ i, g i ≤ ∑ e, A i e * p e) ∧ ∑ i, g i * w i = ∑ e, p e := by
+  sorry
+
+end FiniteLPDuality

@@ -4,7 +4,11 @@
   "theorem_names": [
     "ErdosPaperI.paperI_main_sharp",
     "ErdosPaperI.paperI_main",
-    "ErdosPaperI.split_main"
+    "ErdosPaperI.split_main",
+    "FiniteLPDuality.farkas_real",
+    "FiniteLPDuality.covering_packing_duality",
+    "FiniteLPDuality.farkas_rat",
+    "FiniteLPDuality.packing_duality_rat"
   ],
   "definition_names": [],
   "permitted_axioms": [

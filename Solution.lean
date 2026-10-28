@@ -8,6 +8,7 @@ module
 public import Mathlib
 public import ErdosPaperI.Sharp
 public import ErdosPaperI.SimpleGraphBridge
+public import ErdosPaperI.StrongDuality
 
 /-!
 # Proofs of the statements in `Challenge.lean`
@@ -177,3 +178,34 @@ theorem split_main {V : Type*} [Fintype V] [DecidableEq V] (G : SimpleGraph V) [
   exact PaperI.split_main G hG.toLib
 
 end ErdosPaperI
+
+/-! ## Finite linear programming duality -/
+
+namespace FiniteLPDuality
+
+theorem farkas_real {ι κ : Type*} [Fintype ι] [Fintype κ] (N : ι → κ → ℝ) (c : ι → ℝ)
+    (hinfeas : ¬ ∃ x : κ → ℝ, (∀ j, 0 ≤ x j) ∧ (∀ i, c i ≤ ∑ j, N i j * x j)) :
+    ∃ y : ι → ℝ, (∀ i, 0 ≤ y i) ∧ (∀ j, ∑ i, N i j * y i ≤ 0) ∧ 0 < ∑ i, c i * y i :=
+  FiniteLP.farkas_ge N c hinfeas
+
+theorem covering_packing_duality {ι κ : Type*} [Fintype ι] [Fintype κ]
+    (A : ι → κ → ℝ) (r : ι → ℝ) (hA : ∀ e t, 0 ≤ A e t) (hr : ∀ e, 0 ≤ r e)
+    (hcol : ∀ t, ∃ e, 0 < A e t) :
+    ∃ w : κ → ℝ, (∀ t, 0 ≤ w t) ∧ (∀ e, (∑ t, A e t * w t) ≤ r e) ∧
+      (∑ t, w t) = sInf {v : ℝ | ∃ x : ι → ℝ, (∀ e, 0 ≤ x e) ∧
+        (∀ t, 1 ≤ ∑ e, A e t * x e) ∧ v = ∑ e, r e * x e} :=
+  FiniteLP.covering_packing_duality A r hA hr hcol
+
+theorem farkas_rat {J N : Type*} [Fintype J] [Fintype N] (M : J → N → ℚ) (b : J → ℚ) :
+    (∃ x : N → ℚ, ∀ j, ∑ k, M j k * x k ≤ b j) ∨
+      ∃ y : J → ℚ, (∀ j, 0 ≤ y j) ∧ (∀ k, ∑ j, y j * M j k = 0) ∧ ∑ j, y j * b j < 0 :=
+  FiniteLP.Rat.farkas M b
+
+theorem packing_duality_rat {I E : Type*} [Fintype I] [Fintype E] [DecidableEq I] [DecidableEq E]
+    (A : I → E → ℚ) (g : I → ℚ) (hA : ∀ i e, 0 ≤ A i e) (hcover : ∀ i, ∃ e, 1 ≤ A i e) :
+    ∃ (w : I → ℚ) (p : E → ℚ), (∀ i, 0 ≤ w i) ∧ (∀ e, ∑ i, A i e * w i ≤ 1) ∧
+      (∀ e, 0 ≤ p e) ∧ (∀ i, g i ≤ ∑ e, A i e * p e) ∧ ∑ i, g i * w i = ∑ e, p e := by
+  obtain ⟨pr, du, h⟩ := FiniteLP.Rat.exists_equal_primal_dual A g hA hcover
+  exact ⟨pr.weight, du.price, pr.weight_nonneg, pr.capacity, du.price_nonneg, du.demand, h⟩
+
+end FiniteLPDuality

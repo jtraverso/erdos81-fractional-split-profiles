@@ -16,6 +16,18 @@ weight of a nonnegative weighting of the triangles with load at most one on ever
 | `paperI_main` | The bound `|E| − 2ν₃* ≤ n²/6 + n` of the first edition. |
 | `split_main` | `|E(G)| − 2ν₃*(G) ≤ n²/6 + n/2` for every split `SimpleGraph` on a finite type. |
 
+**Finite LP duality** (version 2), the linear-programming tool of the series:
+
+| Lean (namespace `FiniteLPDuality`) | Statement |
+|---|---|
+| `farkas_real` | Farkas' lemma over `ℝ`: if `x ≥ 0, N x ≥ c` has no solution, some `y ≥ 0` has `Nᵀ y ≤ 0` and `⟨c, y⟩ > 0`. |
+| `covering_packing_duality` | Covering/packing strong duality over `ℝ` (nonnegative incidences and capacities): some packing attains the covering optimum. |
+| `farkas_rat` | Farkas' lemma over `ℚ`: `M x ≤ b` has a rational solution, or a certificate `y ≥ 0` with `yᵀ M = 0` and `⟨y, b⟩ < 0`. |
+| `packing_duality_rat` | Strong duality for the rational packing LP: a packing and a cover of equal value exist. |
+
+The real-valued results are the ones used in this paper; the rational ones (Fourier–Motzkin
+elimination, no analysis) come from the author's Lean formalization of Paper V of the series.
+
 ## Files
 
 - [`Challenge.lean`](Challenge.lean): the definitions and the three statements; it imports only
@@ -26,7 +38,8 @@ weight of a nonnegative weighting of the triangles with load at most one on ever
   [PALOMAR-2026-10-15-000011](https://palomar-registry.org/entry.html?id=PALOMAR-2026-10-15-000011&version=1).
 - [`Solution.lean`](Solution.lean) and [`ErdosPaperI/`](ErdosPaperI): the proofs.
   `Statement.lean` (finite model and the profile reduction), `Sharp.lean` (the sharp bound),
-  `FiniteLPDuality.lean` (finite LP strong duality), `SimpleGraphBridge.lean` (the `SimpleGraph`
+  `FiniteLPDuality.lean` (finite LP duality over `ℝ`), `RationalFarkas.lean`, `RationalLP.lean` and
+  `StrongDuality.lean` (duality over `ℚ`), `SimpleGraphBridge.lean` (the `SimpleGraph`
   form) and `SimpleGraphBridgeSanity.lean` (checks on small graphs).
 - [`comparator.json`](comparator.json), [`MATHLIB_DEFINITIONS.md`](MATHLIB_DEFINITIONS.md),
   [`formalization.yaml`](formalization.yaml).
@@ -46,4 +59,6 @@ Harmonic's Aristotle under the direction of the author, ported to Lean `v4.35.0-
 system with Aristotle and Claude (Claude Code). Lean `v4.35.0-rc3`, Mathlib
 `c55e6e786f49471c72fbddbec5415808896aec1e`: `lake build`; no `sorry`; `#print axioms` gives only
 `propext`, `Classical.choice`, `Quot.sound`; the elaborated statements and definitions of the
-Challenge and the Solution are identical (`pp.all`).
+Challenge and the Solution are identical (`pp.all`). The rational duality modules come from the
+author's Paper V formalization (series collection
+[doi:10.5281/zenodo.23479507](https://doi.org/10.5281/zenodo.23479507)), with namespaces renamed.

@@ -13,7 +13,10 @@ project:
     Mathlib's SimpleGraph, with the definitions of split graphs and fractional triangle packings
     of two registered entries; the weaker bound n²/6 + n of the first edition is also included.
     The proof reduces the fractional packing problem to neighbourhood profiles and a
-    three-variable linear program, using finite LP duality.
+    three-variable linear program, using finite LP duality. Version 2 states the finite LP duality
+    used in the series as results of its own, over ℝ (Farkas' lemma in inequality form and
+    covering/packing strong duality, from this proof) and over ℚ (Farkas' lemma by Fourier–Motzkin
+    elimination and strong duality for the rational packing LP, from the author's Paper V).
   authors:
     - "Juan Pablo Traverso Gianini"
   license: "Apache-2.0"
@@ -42,6 +45,32 @@ sources:
     license: "unknown"
     author_endorsement: "participated"
 
+  - title: "Colorability and Realizability (Erdős #81 series, Paper V)"
+    authors:
+      - "Juan Pablo Traverso Gianini"
+    id: "doi:10.5281/zenodo.23479507"
+    type: "preprint"
+    location: >-
+      Erdős #81 series, Paper V, preprint 1.0, in the 32-PDF series collection on Zenodo; Lean
+      sources in github.com/jtraverso/erdos-81-chordal-clique-partitions
+    relationship: "adapts"
+    note: >-
+      The rational Farkas lemma and the strong duality of the rational packing LP (ErdosPaperI/
+      RationalFarkas, RationalLP, StrongDuality) are copied from the author's Lean formalization of
+      Paper V, with namespaces renamed to FiniteLP.Rat.
+    license: "unknown"
+    author_endorsement: "participated"
+  - title: "Theorie der einfachen Ungleichungen"
+    authors:
+      - "Julius Farkas"
+    id: "doi:10.1515/crll.1902.124.1"
+    type: "paper"
+    location: "Journal für die reine und angewandte Mathematik 124 (1902), 1–27"
+    relationship: "background"
+    note: "Farkas' lemma, stated here over ℝ and over ℚ for finite systems."
+    license: "all rights reserved"
+    author_endorsement: "n/a"
+
 related_formalizations:
   - id: "PALOMAR-2026-10-18-000006 (jtraverso/chordal-split-threshold-graphs)"
     relationship: "other"
@@ -60,6 +89,7 @@ status:
     Proved for every finite split graph: in the finite model (any clique size p, any finite type
     of independent vertices, any neighbourhoods) and for every split SimpleGraph on a finite
     vertex type, through an explicit bridge between the two (ErdosPaperI/SimpleGraphBridge.lean).
+    The duality results (namespace FiniteLPDuality) hold for all finite index types.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: []
@@ -91,6 +121,18 @@ automation:
         spend_usd: "subscription-based"
         hardware: "local machine"
       prompting_notes: "Natural-language instructions in Spanish, directed by the author."
+    - method: "agent"
+      models: ["Claude Opus 5.5"]
+      framework: "Claude Code (Anthropic)"
+      tool_setup: >-
+        Version 2: added the rational duality modules from the author's Paper V formalization and
+        the four duality statements to the Challenge/Solution pair; checked with a local build, a
+        pp.all comparison of the seven Challenge/Solution declarations and #print axioms.
+      cost:
+        wall_time: "under an hour"
+        spend_usd: "subscription-based"
+        hardware: "local machine"
+      prompting_notes: "Natural-language instructions in Spanish, directed by the author."
   spend_usd: "not tracked"
   notes: >-
     AI-assisted under the author's direction and mechanically verified: no sorry, axioms limited
@@ -101,6 +143,9 @@ fidelity:
     ν₃* is a real supremum over feasible packings; in the finite model triangles and edges are
     explicit subtypes of index triples and pairs, and in the SimpleGraph form triangles are the
     3-cliques and weights live on vertex sets. The two forms are related by a proved bridge.
+    The duality statements are written with explicit finite sums over finite index types; over ℚ
+    the Farkas alternative is for systems M x ≤ b with free variables, and the packing LP has
+    capacities 1 and requires every item to use some resource with coefficient at least 1.
 
 review:
   status: "agent-reviewed"
@@ -126,6 +171,22 @@ alignment:
       status: "proved"
     - source: "Paper I, finite consequence, for every split SimpleGraph"
       lean: "ErdosPaperI.split_main"
+      module: "Challenge"
+      status: "proved"
+    - source: "Farkas' lemma over ℝ (inequality form), used in Paper I"
+      lean: "FiniteLPDuality.farkas_real"
+      module: "Challenge"
+      status: "proved"
+    - source: "Covering/packing LP strong duality over ℝ, used in Paper I"
+      lean: "FiniteLPDuality.covering_packing_duality"
+      module: "Challenge"
+      status: "proved"
+    - source: "Farkas' lemma over ℚ (Paper V)"
+      lean: "FiniteLPDuality.farkas_rat"
+      module: "Challenge"
+      status: "proved"
+    - source: "Strong duality for the rational packing LP (Paper V)"
+      lean: "FiniteLPDuality.packing_duality_rat"
       module: "Challenge"
       status: "proved"
 
